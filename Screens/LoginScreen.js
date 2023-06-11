@@ -6,6 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 
 const LoginScreen = () => {
@@ -14,7 +17,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = () => {
-    console.log("Реєстрація:", username, email, password);
+    console.log("Логін:", email, password);
     setEmail("");
     setPassword("");
   };
@@ -28,48 +31,53 @@ const LoginScreen = () => {
       source={require("../assets/img/bg.jpg")}
       style={styles.backgroundImage}
     >
-      <View style={styles.container}>
-        <View style={styles.registrationForm}>
-          <Text style={styles.heading}>Увійти</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.registrationForm}>
+            <Text style={styles.heading}>Увійти</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Адреса електронної пошти"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-          {/* ---- */}
-          <View style={styles.passwordInputContainer}>
-            <TextInput
-              style={styles.inputPass}
-              placeholder="Пароль"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
-
-            <TouchableOpacity
-              style={styles.showPasswordButton}
-              onPress={toggleShowPassword}
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : "position"}
             >
-              <Text style={styles.showPasswordText}>
-                {showPassword ? "Сховати" : "Показати"}
+              <TextInput
+                style={styles.input}
+                placeholder="Адреса електронної пошти"
+                value={email}
+                onChangeText={setEmail}
+              />
+              {/* ---- */}
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.inputPass}
+                  placeholder="Пароль"
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                />
+
+                <TouchableOpacity
+                  style={styles.showPasswordButton}
+                  onPress={toggleShowPassword}
+                >
+                  <Text style={styles.showPasswordText}>
+                    {showPassword ? "Сховати" : "Показати"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
+            {/* ---- */}
+            <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
+              <Text style={styles.loginBtnText}>Увійти</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Text style={styles.loginLinkText}>
+                Немає акаунту? Зареєструватися
               </Text>
             </TouchableOpacity>
           </View>
-          {/* ---- */}
-          <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-            <Text style={styles.loginBtnText}>Увійти</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <Text style={styles.loginLinkText}>
-              Немає акаунту? Зареєструватися
-            </Text>
-          </TouchableOpacity>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </ImageBackground>
   );
 };
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
   input: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-    color: "#BDBDBD",
+    color: "#212121",
     height: 50,
     marginBottom: 12,
     paddingHorizontal: 8,
@@ -136,7 +144,7 @@ const styles = StyleSheet.create({
   inputPass: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-    color: "#BDBDBD",
+    color: "#212121",
   },
 
   showPasswordButton: {
