@@ -10,16 +10,21 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const LoginScreen = () => {
+export default function RegistrationScreen() {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation();
 
   const handleRegister = () => {
-    console.log("Логін:", email, password);
+    console.log("Реєстрація:", username, email, password);
+    setUsername("");
     setEmail("");
     setPassword("");
+    navigation.navigate("Home");
   };
 
   const toggleShowPassword = () => {
@@ -28,17 +33,35 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../assets/img/bg.jpg")}
+      source={require("../../assets/img/bg.jpg")}
       style={styles.backgroundImage}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.registrationForm}>
-            <Text style={styles.heading}>Увійти</Text>
+            {/* ---- */}
+            <View style={styles.profileImageContainer}>
+              <TouchableOpacity style={styles.uploadButton}>
+                <View style={styles.uploadButtonIcon}>
+                  <View style={styles.circle} />
+                  <View style={styles.plus} />
+                  <View style={styles.plusHorizontal} />
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* ------- */}
 
+            <Text style={styles.heading}>Реєстрація</Text>
             <KeyboardAvoidingView
               behavior={Platform.OS == "ios" ? "padding" : "position"}
             >
+              <TextInput
+                style={styles.input}
+                placeholder="Логін"
+                value={username}
+                onChangeText={(text) => setUsername(text)}
+              />
+
               <TextInput
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
@@ -66,21 +89,22 @@ const LoginScreen = () => {
               </View>
             </KeyboardAvoidingView>
             {/* ---- */}
-            <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-              <Text style={styles.loginBtnText}>Увійти</Text>
+            <TouchableOpacity
+              style={styles.registrationBtn}
+              onPress={handleRegister}
+            >
+              <Text style={styles.registrationBtnText}>Зареєструватися</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
-              <Text style={styles.loginLinkText}>
-                Немає акаунту? Зареєструватися
-              </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.loginLinkText}>Вже є акаунт? Увійти</Text>
             </TouchableOpacity>
           </View>
         </View>
       </TouchableWithoutFeedback>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -92,7 +116,7 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 16,
-    paddingTop: 32,
+    paddingTop: 92,
 
     height: "70%",
     borderTopLeftRadius: 25,
@@ -108,7 +132,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "Roboto-Medium",
     marginBottom: 43,
-    fontWeight: 500,
+
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -155,18 +179,18 @@ const styles = StyleSheet.create({
 
   showPasswordText: {
     fontFamily: "Roboto-Regular",
-    fontSize: 16,
     color: "#1B4371",
+    fontSize: 16,
   },
 
-  loginBtn: {
+  registrationBtn: {
     backgroundColor: "#FF6C00",
     borderRadius: 100,
     padding: 16,
     marginTop: 43,
   },
 
-  loginBtnText: {
+  registrationBtnText: {
     fontFamily: "Roboto-Regular",
     color: "#FFF",
     fontSize: 16,
@@ -182,5 +206,60 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1B4371",
   },
+
+  // ----
+  profileImageContainer: {
+    alignItems: "center",
+    position: "absolute",
+    top: -50,
+    left: 0,
+    right: 0,
+    zIndex: 2,
+  },
+
+  uploadButton: {
+    width: 120,
+    height: 120,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  // -------------
+  uploadButtonIcon: {
+    position: "absolute",
+    right: -12.5,
+    bottom: 14,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  circle: {
+    width: 25,
+    height: 25,
+    borderRadius: 12.5,
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  plus: {
+    position: "absolute",
+    width: 12,
+    height: 2,
+    backgroundColor: "#FF6C00",
+    transform: [{ rotate: "90deg" }],
+  },
+
+  plusHorizontal: {
+    position: "absolute",
+    width: 12,
+    height: 2,
+    backgroundColor: "#FF6C00",
+  },
 });
-export default LoginScreen;

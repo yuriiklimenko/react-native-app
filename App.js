@@ -1,5 +1,9 @@
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import "react-native-gesture-handler";
+import RegistrationScreen from "./Screens/auth/RegistrationScreen";
+import LoginScreen from "./Screens/auth/LoginScreen";
+import Home from "./Screens/posts/Home";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 
 export default function App() {
@@ -13,8 +17,20 @@ export default function App() {
     return null;
   }
 
+  const MainStack = createStackNavigator();
+
   return (
-    <RegistrationScreen />
-    // <LoginScreen />
+    <NavigationContainer>
+      <MainStack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <MainStack.Screen name="Login" component={LoginScreen} />
+        <MainStack.Screen name="Registration" component={RegistrationScreen} />
+        <MainStack.Screen name="Home" component={Home} />
+      </MainStack.Navigator>
+    </NavigationContainer>
   );
 }
