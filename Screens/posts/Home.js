@@ -50,8 +50,8 @@ const Home = () => {
         tabBarLabel: () => null,
       })}
     >
-      <Tabs.Screen name="Posts" component={PostsScreen} />
       <Tabs.Screen name="CreatePosts" component={CreatePostsScreen} />
+      <Tabs.Screen name="Posts" component={PostsScreen} />
       <Tabs.Screen
         name="Profile"
         component={ProfileScreen}
