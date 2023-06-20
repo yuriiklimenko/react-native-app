@@ -31,21 +31,22 @@ const CreatePostsScreen = () => {
   // =================================================================
 
   const requestLocationPermission = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Permission to access location was denied");
 
       return;
     }
 
-    let location = await Location.getCurrentPositionAsync({});
+    const location = await Location.getCurrentPositionAsync({});
+    console.log("location", location.coords.latitude);
     setLatitude(location.coords.latitude);
     setLongitude(location.coords.longitude);
   };
 
   const takePhoto = async () => {
     if (cameraRef.current && isCameraReady) {
-      let { status } = await Camera.requestCameraPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
 
       if (status !== "granted") {
         console.log("Permission denied");
@@ -53,7 +54,7 @@ const CreatePostsScreen = () => {
       }
 
       try {
-        let photo = await cameraRef.current.takePictureAsync();
+        const photo = await cameraRef.current.takePictureAsync();
         console.log(photo.uri);
         setPhoto(photo);
       } catch (error) {
@@ -86,9 +87,6 @@ const CreatePostsScreen = () => {
 
   useEffect(() => {
     requestLocationPermission();
-  }, []);
-  useEffect(() => {
-    takePhoto();
   }, []);
 
   useEffect(() => {

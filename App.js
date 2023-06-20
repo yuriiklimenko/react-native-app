@@ -8,6 +8,8 @@ import { useFonts } from "expo-font";
 import CommentsScreen from "./Screens/posts/CommentsScreen";
 import MapScreen from "./Screens/helpers/MapScreen";
 
+const MainStack = createStackNavigator();
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
@@ -18,8 +20,6 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
-
-  const MainStack = createStackNavigator();
 
   return (
     <NavigationContainer>
