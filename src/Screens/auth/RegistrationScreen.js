@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -12,20 +12,52 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function RegistrationScreen() {
-  const [username, setUsername] = useState("");
+import { useDispatch } from "react-redux";
+
+import { authRegistration } from "../../redux/auth/authOperations";
+import Avatar from "../helpers/Avatar";
+
+export default function RegistrationScreen({ route }) {
+  const dispatch = useDispatch();
+
+  const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [userEmail, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    if (route.params?.photoUri) {
+      setAvatar(route.params.photoUri);
+    }
+  }, [route.params]);
+
+  // -----------------
   const handleRegister = () => {
-    console.log("Реєстрація:", username, email, password);
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    navigation.navigate("Home");
+    if (!userName || !userEmail || !password || !avatar) {
+      console.log("Not all fields are filled in");
+      return;
+    }
+
+    dispatch(authRegistration({ userName, userEmail, password, avatar })).then(
+      (res) => {
+        const isErrorRegistration = !!res;
+
+        if (isErrorRegistration) {
+          console.log("REGISTRATION ERROR", res);
+
+          return;
+        } else {
+          setUsername("");
+          setEmail("");
+          setPassword("");
+          navigation.navigate("Home");
+        }
+      }
+    );
   };
+  // -----------------------------------
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -33,24 +65,16 @@ export default function RegistrationScreen() {
 
   return (
     <ImageBackground
-      source={require("../../assets/img/bg.jpg")}
+      source={require("../../../assets/img/bg.jpg")}
       style={styles.backgroundImage}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.registrationForm}>
             {/* ---- */}
-            <View style={styles.profileImageContainer}>
-              <TouchableOpacity style={styles.uploadButton}>
-                <View style={styles.uploadButtonIcon}>
-                  <View style={styles.circle} />
-                  <View style={styles.plus} />
-                  <View style={styles.plusHorizontal} />
-                </View>
-              </TouchableOpacity>
-            </View>
-            {/* ------- */}
 
+            <Avatar fromScreen="registration" />
+            {/* ------- */}
             <Text style={styles.heading}>Реєстрація</Text>
             <KeyboardAvoidingView
               behavior={Platform.OS == "ios" ? "padding" : "position"}
@@ -58,14 +82,15 @@ export default function RegistrationScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Логін"
-                value={username}
+                value={userName}
                 onChangeText={(text) => setUsername(text)}
               />
 
               <TextInput
                 style={styles.input}
+                keyboardType="email-address"
                 placeholder="Адреса електронної пошти"
-                value={email}
+                value={userEmail}
                 onChangeText={setEmail}
               />
               {/* ---- */}
@@ -205,61 +230,5 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#1B4371",
-  },
-
-  // ----
-  profileImageContainer: {
-    alignItems: "center",
-    position: "absolute",
-    top: -50,
-    left: 0,
-    right: 0,
-    zIndex: 2,
-  },
-
-  uploadButton: {
-    width: 120,
-    height: 120,
-
-    justifyContent: "center",
-    alignItems: "center",
-
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  // -------------
-  uploadButtonIcon: {
-    position: "absolute",
-    right: -12.5,
-    bottom: 14,
-    width: 25,
-    height: 25,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  circle: {
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    borderWidth: 1,
-    borderColor: "#FF6C00",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  plus: {
-    position: "absolute",
-    width: 12,
-    height: 2,
-    backgroundColor: "#FF6C00",
-    transform: [{ rotate: "90deg" }],
-  },
-
-  plusHorizontal: {
-    position: "absolute",
-    width: 12,
-    height: 2,
-    backgroundColor: "#FF6C00",
   },
 });

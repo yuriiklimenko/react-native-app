@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect } from "react";
+
 import {
   Text,
   View,
@@ -7,16 +8,30 @@ import {
   ImageBackground,
   TouchableWithoutFeedback,
   Keyboard,
+  FlatList,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useSelector, useDispatch } from "react-redux";
 import { Feather } from "@expo/vector-icons";
+import { authLogout } from "../../redux/auth/authOperations";
+import Avatar from "../helpers/Avatar";
+import Post from "./Post";
+
+import { selectUser } from "../../redux/auth/authSelectors";
+import { selectPosts } from "../../redux/posts/postsSelectors";
+import { getPosts } from "../../redux/posts/postsOperations";
 
 export default function ProfileScreen() {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const posts = useSelector(selectPosts);
+  const { userName } = useSelector(selectUser);
+
+  useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
 
   return (
     <ImageBackground
-      source={require("../../assets/img/bg.jpg")}
+      source={require("../../../assets/img/bg.jpg")}
       style={styles.backgroundImage}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -25,19 +40,25 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={styles.logoutButton}
               onPress={() => {
-                console.log("Log out");
-                navigation.navigate("Login");
+                dispatch(authLogout());
               }}
             >
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
-            {/* ---- */}
-            <View style={styles.profileImageContainer}>
-              <TouchableOpacity style={styles.uploadButton}></TouchableOpacity>
-            </View>
-            {/* ------- */}
 
-            <Text style={styles.heading}>Name</Text>
+            <Avatar fromScreen="profile" />
+
+            <Text style={styles.heading}>{userName}</Text>
+
+            <FlatList
+              data={posts}
+              keyExtractor={(post) => post.idPost}
+              renderItem={(post) => (
+                <View style={{ marginBottom: 32 }}>
+                  <Post post={post} fromScreen="profile" />
+                </View>
+              )}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -70,35 +91,14 @@ const styles = StyleSheet.create({
 
   heading: {
     fontFamily: "Roboto-Medium",
-    // marginBottom: 43,
-    marginTop: 92,
+    marginTop: 60,
+    marginBottom: 32,
 
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
     letterSpacing: 0.01,
     color: "#212121",
-  },
-
-  // ----img
-  profileImageContainer: {
-    alignItems: "center",
-    position: "absolute",
-    top: -50,
-    left: 0,
-    right: 0,
-    zIndex: 2,
-  },
-
-  uploadButton: {
-    width: 120,
-    height: 120,
-
-    justifyContent: "center",
-    alignItems: "center",
-
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
   },
 
   logoutButton: {

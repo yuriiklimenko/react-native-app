@@ -12,26 +12,39 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+import { authLogin } from "../../redux/auth/authOperations";
+
+import { useDispatch } from "react-redux";
+
 const LoginScreen = () => {
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [userEmail, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  // ------------------------------------
 
-  const handleRegister = () => {
-    console.log("Логін:", email, password);
-    setEmail("");
-    setPassword("");
-    navigation.navigate("Home");
+  const handleLogIn = () => {
+    dispatch(authLogin({ userEmail, password })).then((res) => {
+      const isErrorLogin = res.user;
+      if (!isErrorLogin) {
+        console.log("Login Error", res);
+        return;
+      } else {
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+      }
+    });
   };
-
+  // -----------
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   return (
     <ImageBackground
-      source={require("../../assets/img/bg.jpg")}
+      source={require("../../../assets/img/bg.jpg")}
       style={styles.backgroundImage}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -45,7 +58,7 @@ const LoginScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
-                value={email}
+                value={userEmail}
                 onChangeText={setEmail}
               />
               {/* ---- */}
@@ -69,7 +82,7 @@ const LoginScreen = () => {
               </View>
             </KeyboardAvoidingView>
             {/* ---- */}
-            <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
+            <TouchableOpacity style={styles.loginBtn} onPress={handleLogIn}>
               <Text style={styles.loginBtnText}>Увійти</Text>
             </TouchableOpacity>
 

@@ -13,12 +13,12 @@ const Home = () => {
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === "Posts") {
             iconName = "grid";
-          } else if (route.name === "CreatePosts") {
+          } else if (route.name === "CreatePost") {
             iconName = "plus";
           } else if (route.name === "Profile") {
             iconName = "user";
@@ -50,8 +50,8 @@ const Home = () => {
         tabBarLabel: () => null,
       })}
     >
-      <Tabs.Screen name="CreatePosts" component={CreatePostsScreen} />
       <Tabs.Screen name="Posts" component={PostsScreen} />
+      <Tabs.Screen name="CreatePost" component={CreatePostsScreen} />
       <Tabs.Screen
         name="Profile"
         component={ProfileScreen}
