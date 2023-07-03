@@ -57,6 +57,7 @@ const LoginScreen = () => {
             >
               <TextInput
                 style={styles.input}
+                keyboardType="email-address"
                 placeholder="Адреса електронної пошти"
                 value={userEmail}
                 onChangeText={setEmail}
